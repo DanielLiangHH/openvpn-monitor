@@ -10,4 +10,28 @@ tmp*
 .tox
 *.egg-info/
 /.venv/
-/openvpn_monitor/static/dist/bootstrap3/dist/
+
+# IDE
+.idea/
+
+# Python 构建产物（与 debian/rules 的 clean 目标一致）
+__pycache__/
+/build/
+/dist/
+/MANIFEST
+
+# 前端依赖：构建前由 yarn 生成，不入库
+#   yarnpkg --prod --modules-folder openvpn_monitor/static/dist install
+# 见 README.md、debian/README.Debian、.github/workflows/create-release-and-upload-assets.yml
+# 本规则取代原先只忽略 bootstrap3/dist 的窄规则
+/openvpn_monitor/static/dist/
+/yarn.lock
+
+# 本地运行配置：含 management 口令
+# 范例见 etc/openvpn-monitor/openvpn-monitor.conf.example
+/openvpn_monitor/openvpn-monitor.conf
+
+# i18n：messages.pot 由 pybabel extract 生成，翻译源为 translations/**/messages.po
+# 注意 .mo 必须入库——构建流程中没有 pybabel compile 步骤，setup.py 直接打包
+# translations/ 下的现有文件，缺少 .mo 会导致部署后界面回退英文
+/messages.pot

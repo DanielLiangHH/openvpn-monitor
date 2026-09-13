@@ -1,10 +1,12 @@
+{# 本片段由 sessions.html 引入，依赖该处 {% set headers %} 定义的变量。
+   data-label 供窄屏卡片布局使用，取列表头文本，与表头保持同一数据源。 #}
 {% set tuntap_r = session.get('tuntap_read') %}
 {% set tuntap_w = session.get('tuntap_write') %}
 {% set tcpudp_r = session.get('tcpudp_read') %}
 {% set tcpudp_w = session.get('tcpudp_write') %}
 {% set auth_r = session.get('auth_read') %}
-<td>{{ tuntap_r }} ({{ tuntap_r | get_naturalsize }})</td>
-<td>{{ tuntap_w }} ({{ tuntap_w | get_naturalsize }})</td>
-<td>{{ tcpudp_r }} ({{ tcpudp_r | get_naturalsize }})</td>
-<td>{{ tcpudp_w }} ({{ tcpudp_w | get_naturalsize }})</td>
-<td>{{ auth_r }} ({{ auth_r | get_naturalsize }})</td>
+<td data-label="{{ headers[0] }}">{{ tuntap_r }} ({{ tuntap_r | get_naturalsize }})</td>
+<td data-label="{{ headers[1] }}">{{ tuntap_w }} ({{ tuntap_w | get_naturalsize }})</td>
+<td data-label="{{ headers[2] }}">{{ tcpudp_r }} ({{ tcpudp_r | get_naturalsize }})</td>
+<td data-label="{{ headers[3] }}">{{ tcpudp_w }} ({{ tcpudp_w | get_naturalsize }})</td>
+<td data-label="{{ headers[4] }}">{{ auth_r }} ({{ auth_r | get_naturalsize }})</td>

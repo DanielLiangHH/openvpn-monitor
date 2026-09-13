@@ -1,32 +1,30 @@
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-         <span class="icon-bar"></span>
-         <span class="icon-bar"></span>
-         <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">{{ site }} OpenVPN Status Monitor</a>
-  </div>
-  <div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-      <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">VPN<span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          {% for _, vpn in vpns %}
-            {% if vpn.get('name') %}
-              <li><a href="#{{ vpn | get_vpn_anchor }}">{{ vpn.get('name') }}</a></li>
-            {% endif %}
-          {% endfor %}
-        </ul>
-      </li>
-      {% if maps %}<li><a href="#map_canvas">Map View</a></li>{% endif %}
-    </ul>
-      {% if logo %}
-        <a href="#" class="pull-right">
-          <img alt="Logo" style="max-height:46px; padding-top:3px;" src="{{ url_for('get_logo') }}">
-        </a>
-      {% endif %}
+<nav class="navbar vpn-nav">
+  <div class="vpn-nav__inner">
+    <a class="vpn-nav__brand" href="#">{{ site }} {{ _('OpenVPN Status Monitor') }}</a>
+    {% if logo %}
+      <img class="vpn-nav__logo" alt="{{ _('Logo') }}" src="{{ url_for('get_logo') }}">
+    {% endif %}
+    <button type="button" class="vpn-nav__toggle" data-toggle="collapse" data-target="#myNavbar"
+            aria-label="{{ _('Toggle navigation') }}" aria-expanded="false" aria-controls="myNavbar">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">VPN<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            {# 同上：不可用 `_` 作循环变量，避免遮蔽 gettext 别名 #}
+            {% for vpn_id, vpn in vpns %}
+              {% if vpn.get('name') %}
+                <li><a href="#{{ vpn | get_vpn_anchor }}">{{ vpn.get('name') }}</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
+        {% if maps %}<li><a href="#map_canvas">{{ _('Map View') }}</a></li>{% endif %}
+      </ul>
     </div>
   </div>
 </nav>

@@ -1,0 +1,174 @@
+# Chinese (Simplified, China) translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-09-13 12:07+0800\n"
+"PO-Revision-Date: 2026-09-13 12:04+0800\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_Hans_CN\n"
+"Language-Team: zh_Hans_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: openvpn_monitor/app.py:128
+msgid "Username / Hostname"
+msgstr "用户名 / 主机名"
+
+#: openvpn_monitor/app.py:129
+msgid "VPN IP"
+msgstr "VPN 地址"
+
+#: openvpn_monitor/app.py:130
+msgid "Remote IP"
+msgstr "远端 IP"
+
+#: openvpn_monitor/app.py:131
+msgid "Location"
+msgstr "位置"
+
+#: openvpn_monitor/app.py:132
+msgid "Bytes In"
+msgstr "接收流量"
+
+#: openvpn_monitor/app.py:133
+msgid "Bytes Out"
+msgstr "发送流量"
+
+#: openvpn_monitor/app.py:134
+msgid "Connected Since"
+msgstr "连接时间"
+
+#: openvpn_monitor/app.py:135
+msgid "Last Ping"
+msgstr "最后活动"
+
+#: openvpn_monitor/app.py:136 openvpn_monitor/templates/sessions.html:11
+msgid "Time Online"
+msgstr "在线时长"
+
+#: openvpn_monitor/app.py:139
+msgid "Tun-Tap-Read"
+msgstr "Tun/Tap 读取"
+
+#: openvpn_monitor/app.py:140
+msgid "Tun-Tap-Write"
+msgstr "Tun/Tap 写入"
+
+#: openvpn_monitor/app.py:141
+msgid "TCP-UDP-Read"
+msgstr "TCP/UDP 读取"
+
+#: openvpn_monitor/app.py:142
+msgid "TCP-UDP-Write"
+msgstr "TCP/UDP 写入"
+
+#: openvpn_monitor/app.py:143
+msgid "Auth-Read"
+msgstr "认证读取"
+
+#: openvpn_monitor/app.py:162
+#, python-format
+msgid "%(num)d day"
+msgid_plural "%(num)d days"
+msgstr[0] "%(num)d 天"
+
+#: openvpn_monitor/templates/base.html:8
+#: openvpn_monitor/templates/navbar.html:3
+msgid "OpenVPN Status Monitor"
+msgstr "OpenVPN 状态监控"
+
+#: openvpn_monitor/templates/base.html:25
+msgid "Page automatically reloads every 5 minutes. Last update:"
+msgstr "页面每 5 分钟自动刷新。最后更新："
+
+#: openvpn_monitor/templates/maps.html:4
+#: openvpn_monitor/templates/navbar.html:26
+msgid "Map View"
+msgstr "地图视图"
+
+#: openvpn_monitor/templates/navbar.html:5
+msgid "Logo"
+msgstr "标志"
+
+#: openvpn_monitor/templates/navbar.html:8
+msgid "Toggle navigation"
+msgstr "切换导航"
+
+#: openvpn_monitor/templates/server_session.html:24
+#: openvpn_monitor/templates/server_session.html:32
+msgid "Unknown"
+msgstr "未知"
+
+#: openvpn_monitor/templates/server_session.html:49
+msgid "Disconnect"
+msgstr "断开连接"
+
+#: openvpn_monitor/templates/sessions.html:7
+msgid "Action"
+msgstr "操作"
+
+#: openvpn_monitor/templates/unavailable_vpn.html:6
+msgid "Could not connect to"
+msgstr "无法连接到"
+
+#: openvpn_monitor/templates/vpn_info.html:34
+#: openvpn_monitor/templates/vpn_info.html:49
+msgid "VPN Mode"
+msgstr "VPN 模式"
+
+#: openvpn_monitor/templates/vpn_info.html:35
+#: openvpn_monitor/templates/vpn_info.html:50
+msgid "Status"
+msgstr "状态"
+
+#: openvpn_monitor/templates/vpn_info.html:36
+#: openvpn_monitor/templates/vpn_info.html:51
+msgid "Pingable"
+msgstr "可连通"
+
+#: openvpn_monitor/templates/vpn_info.html:37
+#: openvpn_monitor/templates/vpn_info.html:52
+msgid "Clients"
+msgstr "客户端数"
+
+#: openvpn_monitor/templates/vpn_info.html:38
+#: openvpn_monitor/templates/vpn_info.html:53
+msgid "Total Bytes In"
+msgstr "累计接收"
+
+#: openvpn_monitor/templates/vpn_info.html:39
+#: openvpn_monitor/templates/vpn_info.html:54
+msgid "Total Bytes Out"
+msgstr "累计发送"
+
+#: openvpn_monitor/templates/vpn_info.html:40
+#: openvpn_monitor/templates/vpn_info.html:55
+msgid "Up Since"
+msgstr "启动时间"
+
+#: openvpn_monitor/templates/vpn_info.html:41
+#: openvpn_monitor/templates/vpn_info.html:56
+msgid "Local IP Address"
+msgstr "本地 IP 地址"
+
+#: openvpn_monitor/templates/vpn_info.html:43
+#: openvpn_monitor/templates/vpn_info.html:58
+msgid "Remote IP Address"
+msgstr "远端 IP 地址"
+
+#: openvpn_monitor/templates/vpn_info.html:51
+msgid "Yes"
+msgstr "是"
+
+#: openvpn_monitor/templates/vpn_info.html:51
+msgid "No"
+msgstr "否"
+

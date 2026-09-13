@@ -22,6 +22,7 @@ import secrets
 import sys
 from datetime import datetime
 from flask import Flask, request, render_template, send_file, current_app
+from flask_babel import Babel, get_locale, gettext, ngettext
 from flask_wtf import CSRFProtect
 from humanize import naturalsize
 from pprint import pformat
@@ -47,6 +48,9 @@ def openvpn_monitor_wsgi():
     csrf.init_app(app)
     secret_key = secrets.token_hex(16)
     app.secret_key = secret_key
+
+    # 翻译目录默认为 app root_path 下的 translations/，即 openvpn_monitor/translations
+    babel = Babel(app, default_locale='zh_CN')
 
     if app.debug:
         logging.getLogger().setLevel(logging.DEBUG)
@@ -121,22 +125,22 @@ def openvpn_monitor_wsgi():
     @app.template_filter()
     def get_session_headers(vpn_mode):
         server_headers = [
-            'Username / Hostname',
-            'VPN IP',
-            'Remote IP',
-            'Location',
-            'Bytes In',
-            'Bytes Out',
-            'Connected Since',
-            'Last Ping',
-            'Time Online'
+            gettext('Username / Hostname'),
+            gettext('VPN IP'),
+            gettext('Remote IP'),
+            gettext('Location'),
+            gettext('Bytes In'),
+            gettext('Bytes Out'),
+            gettext('Connected Since'),
+            gettext('Last Ping'),
+            gettext('Time Online')
         ]
         client_headers = [
-            'Tun-Tap-Read',
-            'Tun-Tap-Write',
-            'TCP-UDP-Read',
-            'TCP-UDP-Write',
-            'Auth-Read'
+            gettext('Tun-Tap-Read'),
+            gettext('Tun-Tap-Write'),
+            gettext('TCP-UDP-Read'),
+            gettext('TCP-UDP-Write'),
+            gettext('Auth-Read')
         ]
         if vpn_mode == 'Client':
             headers = client_headers
@@ -146,7 +150,17 @@ def openvpn_monitor_wsgi():
 
     @app.template_filter()
     def get_total_connected_time(connected_since):
-        return str(datetime.now() - connected_since)[:-7]
+        # 原实现直接截取 timedelta 的字符串形式（如 '2 days, 7:39:39'）。
+        # 天数部分由 timedelta.__str__ 生成、受 locale 影响不可控，
+        # 故改为自行拆解，保证中文输出为 '2 天 07:39:39'。
+        delta = datetime.now() - connected_since
+        days, remainder = delta.days, delta.seconds
+        hours, remainder = divmod(remainder, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        if not days:
+            return f'{hours}:{minutes:02d}:{seconds:02d}'
+        day_part = ngettext('%(num)d day', '%(num)d days', days) % {'num': days}
+        return f'{day_part} {hours:02d}:{minutes:02d}:{seconds:02d}'
 
     @app.context_processor
     def inject_settings():
@@ -157,6 +171,10 @@ def openvpn_monitor_wsgi():
         latitude = settings.get('latitude', 40.72)
         longitude = settings.get('longitude', -74)
         datetime_format = settings.get('datetime_format', '%d/%m/%Y %H:%M:%S')
+        # Flask-Babel 只向 Jinja 注册了 _ / gettext / ngettext，并未注册 get_locale，
+        # 故在此注入。get_locale() 返回 Locale 对象，str() 为 zh_Hans_CN，
+        # 转成 BCP47 供 <html lang> 使用。
+        locale = str(get_locale()).replace('_', '-')
         return dict(
             site=site,
             logo=logo,
@@ -165,6 +183,7 @@ def openvpn_monitor_wsgi():
             latitude=latitude,
             longitude=longitude,
             datetime_format=datetime_format,
+            locale=locale,
         )
 
     @app.route('/images/logo', methods=['GET'])

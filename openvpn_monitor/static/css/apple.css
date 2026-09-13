@@ -1,0 +1,800 @@
+/*!
+ * apple.css - Apple 风格样式层
+ *
+ * 加载顺序：必须最后加载，即排在 bootstrap / tablesorter / leaflet 之后
+ * （见 templates/css.html）。同特异性的规则由顺序决定胜负，本层是覆盖层。
+ * 仅覆盖视觉表现，不改变任何 Bootstrap JS 行为（navbar collapse / dropdown）。
+ *
+ * 断点：767.98px 以下为移动端单列布局，与 Bootstrap 3 的 navbar 折叠断点、
+ * .table-responsive 的 nowrap 媒体查询（均为 max-width:767px）严格对齐。
+ *
+ * 三者必须同址。Bootstrap 在 max-width:767px 内对 .table-responsive 的子单元格
+ * 施加 white-space:nowrap，若本层断点更窄（曾用 733px），734-767px 区间就会出现
+ * 「表格布局已回归、单元格仍禁止换行」的夹缝：实测表格自然宽度从 827px 涨到
+ * 1173px，736px 视口下需横向滚动 543px。
+ */
+
+/* ==========================================================================
+   1. Design tokens
+   ========================================================================== */
+
+:root {
+  /* 颜色 */
+  --apple-bg-white: #ffffff;
+  --apple-bg-dark: #1d1d1f;
+  --apple-bg-light-gray: #f5f5f7;
+  --apple-bg-elevated: #fbfbfd;
+
+  --apple-text-primary: #1d1d1f;
+  --apple-text-secondary: #6e6e73;
+  --apple-text-tertiary: #86868b;
+  --apple-text-on-dark: #f5f5f7;
+  --apple-text-white: #ffffff;
+
+  --apple-link-blue: #0066cc;
+  --apple-link-blue-hover: #0077ed;
+  --apple-accent-green: #2d8c3c;
+  --apple-accent-orange: #e85d04;
+  --apple-accent-red: #e30000;
+
+  /* 原生组件未定义，为本项目补充 */
+  --apple-hairline: rgba(0, 0, 0, 0.1);
+  --apple-fill-subtle: rgba(120, 120, 128, 0.12);
+  --apple-nav-bg: rgba(255, 255, 255, 0.72);
+  --apple-badge-ok-bg: rgba(45, 140, 60, 0.12);
+  --apple-badge-warn-bg: rgba(232, 93, 4, 0.12);
+  --apple-badge-error-bg: rgba(227, 0, 0, 0.1);
+
+  /* 间距 */
+  --apple-section-gap-sm: 80px;
+  --apple-component-gap-sm: 16px;
+  --apple-component-gap-md: 32px;
+  --apple-component-gap-lg: 48px;
+
+  --apple-card-padding: 32px;
+  --apple-card-padding-sm: 20px;
+
+  --apple-content-max-width-lg: 1200px;
+
+  /* 字重 */
+  --apple-weight-title: 600;
+  --apple-weight-title-bold: 700;
+  --apple-weight-body: 400;
+  --apple-weight-body-medium: 500;
+
+  /* 圆角 */
+  --apple-radius-card: 18px;
+  --apple-radius-card-sm: 12px;
+  --apple-radius-button: 980px;
+  --apple-radius-badge: 8px;
+
+  /* 阴影 */
+  --apple-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.08);
+  --apple-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.06);
+
+  /* 字号 */
+  --apple-font-size-hero: 48px;
+  --apple-font-size-title: 24px;
+  --apple-font-size-body: 17px;
+  --apple-font-size-caption: 12px;
+
+  /* 行高与字距 */
+  --apple-leading-title: 1.1;
+  --apple-leading-body: 1.53;
+  --apple-tracking-en-title: -0.015em;
+  --apple-tracking-body: 0em;
+
+  /* 字体栈：Apple 系统字体，无需外部字体请求（本项目面向离线内网部署） */
+  --apple-font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display',
+    'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --apple-font-text: -apple-system, BlinkMacSystemFont, 'SF Pro Text',
+    'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+
+  /* 断点：须与 Bootstrap 3 的 navbar 折叠断点（767px）保持一致 */
+  --apple-breakpoint-sm: 767.98px;
+}
+
+/* 暗色模式：仅重定义 token，组件规则自动跟随 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --apple-bg-white: #1c1c1e;
+    --apple-bg-elevated: #2c2c2e;
+    --apple-bg-light-gray: #2c2c2e;
+    --apple-text-primary: #f5f5f7;
+    --apple-text-secondary: #a1a1a6;
+    --apple-text-tertiary: #8e8e93;
+    --apple-link-blue: #2997ff;
+    --apple-link-blue-hover: #5ac8fa;
+    --apple-accent-green: #30d158;
+    --apple-accent-orange: #ff9f0a;
+    --apple-accent-red: #ff453a;
+    --apple-hairline: rgba(255, 255, 255, 0.12);
+    --apple-fill-subtle: rgba(120, 120, 128, 0.24);
+    --apple-nav-bg: rgba(28, 28, 30, 0.72);
+    --apple-badge-ok-bg: rgba(48, 209, 88, 0.18);
+    --apple-badge-warn-bg: rgba(255, 159, 10, 0.18);
+    --apple-badge-error-bg: rgba(255, 69, 58, 0.18);
+    --apple-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.4);
+    --apple-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ==========================================================================
+   2. 基础与页面骨架
+   ========================================================================== */
+
+body {
+  background: var(--apple-bg-light-gray);
+  color: var(--apple-text-primary);
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-font-size-body);
+  line-height: var(--apple-leading-body);
+  letter-spacing: var(--apple-tracking-body);
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  /* 底部安全区：iPhone 横屏/独立窗口下避免内容被 Home 指示条遮挡 */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 覆盖 .container-fluid：限制内容宽度并适配左右安全区 */
+.container-fluid {
+  max-width: var(--apple-content-max-width-lg);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
+
+.vpn-footer {
+  margin: var(--apple-component-gap-md) 0 var(--apple-component-gap-md);
+  padding-top: var(--apple-component-gap-sm);
+  border-top: 1px solid var(--apple-hairline);
+  color: var(--apple-text-tertiary);
+  font-size: var(--apple-font-size-caption);
+  text-align: center;
+}
+
+.vpn-footer b {
+  font-weight: var(--apple-weight-body-medium);
+  color: var(--apple-text-secondary);
+}
+
+/* ==========================================================================
+   3. 导航栏
+   ========================================================================== */
+
+.vpn-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  min-height: 0;
+  margin-bottom: var(--apple-component-gap-md);
+  padding-top: env(safe-area-inset-top);
+  background: var(--apple-nav-bg);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border: 0;
+  border-bottom: 1px solid var(--apple-hairline);
+  border-radius: 0;
+}
+
+/* 不支持 backdrop-filter 时退化为不透明背景，避免文字与内容重叠 */
+@supports not ((backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))) {
+  .vpn-nav {
+    background: var(--apple-bg-white);
+  }
+}
+
+.vpn-nav__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--apple-component-gap-sm);
+  max-width: var(--apple-content-max-width-lg);
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+
+/* flex-basis 必须为 0：flex-wrap 是按 flex-basis 决定换行的，
+   若用 auto（= 内容宽度），长站名会先占满一行并把汉堡按钮挤到第二行。
+   basis 为 0 时两者同行，标题再按剩余宽度换行。 */
+.vpn-nav__brand {
+  flex: 1 1 0;
+  min-width: 0;
+  /* 站名过长时最多两行，避免导航栏被持续撑高 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: auto;
+  padding: 14px 0;
+  color: var(--apple-text-primary);
+  font-family: var(--apple-font-display);
+  font-size: 21px;
+  font-weight: var(--apple-weight-title);
+  line-height: 1.3;
+  letter-spacing: var(--apple-tracking-en-title);
+  text-decoration: none;
+}
+
+.vpn-nav__brand:hover,
+.vpn-nav__brand:focus {
+  color: var(--apple-text-primary);
+  text-decoration: none;
+}
+
+.vpn-nav__logo {
+  flex: 0 0 auto;
+  max-height: 32px;
+  width: auto;
+}
+
+/* 汉堡按钮：44x44 最小可点击区域（Apple HIG 触控目标下限） */
+.vpn-nav__toggle {
+  flex: 0 0 auto;
+  display: none;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--apple-radius-card-sm);
+  cursor: pointer;
+}
+
+.vpn-nav__toggle .icon-bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  margin: 4px auto;
+  background: var(--apple-text-primary);
+  border-radius: 1px;
+}
+
+.vpn-nav__toggle:hover,
+.vpn-nav__toggle:focus {
+  background: var(--apple-fill-subtle);
+  outline: none;
+}
+
+/* 折叠菜单。断点必须与 Bootstrap 3 的 navbar 折叠断点（768px）一致，
+   否则 collapse 的显隐与这里的方向/边框会错位。 */
+@media (max-width: 767.98px) {
+  .vpn-nav .navbar-collapse {
+    flex: 1 0 100%;
+    padding-left: 0;
+    padding-right: 0;
+    border-top: 1px solid var(--apple-hairline);
+    box-shadow: none;
+  }
+
+  /* 汉堡按钮与折叠断点同步，保证折叠态下始终有展开入口 */
+  .vpn-nav__toggle {
+    display: block;
+  }
+
+  .vpn-nav__brand {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 768px) {
+  .vpn-nav .navbar-collapse {
+    flex: 0 1 auto;
+    padding-left: 0;
+    padding-right: 0;
+    border-top: 0;
+    box-shadow: none;
+  }
+
+  /* Bootstrap 在宽屏把导航项设为浮动，与 flex 布局冲突，需还原 */
+  .vpn-nav .navbar-nav {
+    display: flex;
+    align-items: center;
+    float: none;
+  }
+
+  .vpn-nav .navbar-nav > li {
+    float: none;
+  }
+}
+
+.vpn-nav .navbar-nav {
+  margin: 0;
+}
+
+.vpn-nav .navbar-nav > li > a {
+  padding: 14px max(16px, env(safe-area-inset-left));
+  color: var(--apple-text-primary);
+  font-size: var(--apple-font-size-body);
+  line-height: 1.4;
+}
+
+.vpn-nav .navbar-nav > li > a:hover,
+.vpn-nav .navbar-nav > li > a:focus {
+  background: var(--apple-fill-subtle);
+  color: var(--apple-link-blue);
+}
+
+.vpn-nav .navbar-nav > .open > a,
+.vpn-nav .navbar-nav > .open > a:hover,
+.vpn-nav .navbar-nav > .open > a:focus {
+  background: var(--apple-fill-subtle);
+  color: var(--apple-text-primary);
+}
+
+/* 下拉菜单：去掉 Bootstrap 的 1px 边框与硬阴影 */
+.vpn-nav .dropdown-menu {
+  margin: 0;
+  padding: 6px 0;
+  background: var(--apple-bg-elevated);
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-radius-card-sm);
+  box-shadow: var(--apple-shadow-card);
+}
+
+.vpn-nav .dropdown-menu > li > a {
+  padding: 11px max(16px, env(safe-area-inset-left));
+  color: var(--apple-text-primary);
+  font-size: var(--apple-font-size-body);
+  line-height: 1.4;
+}
+
+.vpn-nav .dropdown-menu > li > a:hover,
+.vpn-nav .dropdown-menu > li > a:focus {
+  background: var(--apple-fill-subtle);
+  color: var(--apple-link-blue);
+}
+
+/* 避开 iOS 因字号 <16px 触发的输入框自动缩放，同时还原点击态 */
+.vpn-nav a,
+.vpn-nav button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ==========================================================================
+   4. 卡片
+   ========================================================================== */
+
+.vpn-card {
+  margin-bottom: var(--apple-component-gap-md);
+  background: var(--apple-bg-white);
+  border: 0;
+  border-radius: var(--apple-radius-card);
+  box-shadow: var(--apple-shadow-card);
+  overflow: hidden;
+}
+
+.vpn-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--apple-component-gap-sm);
+  padding: var(--apple-card-padding) var(--apple-card-padding) 0;
+}
+
+/* 卡片头部左侧状态圆点，替代 Bootstrap panel 的彩色边框 */
+.vpn-card__header::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  order: -1;
+  border-radius: 50%;
+  background: var(--apple-text-tertiary);
+}
+
+.vpn-card--ok .vpn-card__header::before {
+  background: var(--apple-accent-green);
+}
+
+.vpn-card--warn .vpn-card__header::before {
+  background: var(--apple-accent-orange);
+}
+
+.vpn-card--error .vpn-card__header::before {
+  background: var(--apple-accent-red);
+}
+
+.vpn-card--info .vpn-card__header::before {
+  background: var(--apple-link-blue);
+}
+
+.vpn-card__title {
+  flex: 1 1 auto;
+  margin: 0;
+  color: var(--apple-text-primary);
+  font-family: var(--apple-font-display);
+  font-size: var(--apple-font-size-title);
+  font-weight: var(--apple-weight-title);
+  line-height: var(--apple-leading-title);
+  letter-spacing: var(--apple-tracking-en-title);
+}
+
+.vpn-card__body {
+  padding: var(--apple-component-gap-sm) var(--apple-card-padding) var(--apple-card-padding);
+}
+
+.vpn-card__message {
+  margin: 0;
+  color: var(--apple-text-secondary);
+  word-break: break-word;
+}
+
+.vpn-card__message code {
+  padding: 2px 6px;
+  background: var(--apple-bg-light-gray);
+  border-radius: 6px;
+  color: var(--apple-text-primary);
+  font-size: 15px;
+}
+
+.vpn-card__footer {
+  padding: 12px var(--apple-card-padding);
+  background: var(--apple-bg-light-gray);
+  border-top: 1px solid var(--apple-hairline);
+  color: var(--apple-text-tertiary);
+  font-size: var(--apple-font-size-caption);
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   5. 表格（桌面）
+   ========================================================================== */
+
+.vpn-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  background: transparent;
+  font-size: 15px;
+}
+
+.vpn-table > thead > tr > th {
+  padding: 8px 12px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--apple-hairline);
+  color: var(--apple-text-secondary);
+  font-family: var(--apple-font-text);
+  font-size: var(--apple-font-size-caption);
+  font-weight: var(--apple-weight-body-medium);
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.vpn-table > tbody > tr > td {
+  padding: 10px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--apple-hairline);
+  color: var(--apple-text-primary);
+  font-family: var(--apple-font-text);
+  line-height: 1.45;
+  vertical-align: top;
+  /* 必须用 overflow-wrap 而非 word-break：word-break:break-word 会允许在任意
+     字符处断行，使单元格最小内容宽度退化为一字符，列被压窄后 IP、字节数等
+     会被拦腰截断（124.240 / .8.85）。overflow-wrap 不改变最小内容宽度——
+     列宽按最长单词撑开，仅当该单词确实放不下时才断行。 */
+  overflow-wrap: break-word;
+}
+
+.vpn-table > tbody > tr:last-child > td {
+  border-bottom: 0;
+}
+
+/* 覆盖 tablesorter bootstrap 主题自带的表现：灰色表头底、Arial 字体、
+   内层多余 padding、斑马纹与 hover 背景。选择器与主题保持同等特异性，
+   依靠 apple.css 在其之后加载取胜。 */
+.vpn-table .tablesorter-header-inner {
+  /* 主题默认 4px 18px 4px 4px，此处仅保留右侧 18px 供排序图标占位 */
+  padding: 0 18px 0 0;
+  /* 排序图标是相对本元素的绝对定位。本元素默认块级、铺满整列，列宽大于文字时
+     图标会被推到列最右侧，与标签之间出现无法归属的空白；收缩到内容宽度后，
+     图标紧贴标签，排序入口的归属一目了然。 */
+  display: inline-block;
+}
+
+.tablesorter-bootstrap > tbody > tr.even > td,
+.tablesorter-bootstrap > tbody > tr.odd > td {
+  background: transparent;
+}
+
+/* 主题的 hover 规则带 .even/.odd，特异性为 (0,3,3)，
+   此处必须逐一对齐，否则单元格仍会显示主题的灰色 hover 背景 */
+.tablesorter-bootstrap > tbody > tr.even:hover > td,
+.tablesorter-bootstrap > tbody > tr.odd:hover > td {
+  background: var(--apple-fill-subtle);
+}
+
+/* 第一列加重，作为该行的标识 */
+.vpn-table > tbody > tr > td:first-child {
+  font-weight: var(--apple-weight-body-medium);
+}
+
+/* 详情表：第一列为字段名 */
+.vpn-table--detail > tbody > tr > td:first-child {
+  color: var(--apple-text-secondary);
+  font-weight: var(--apple-weight-body);
+  white-space: nowrap;
+}
+
+/* 会话表：数字列等宽对齐，便于纵向比较 */
+.vpn-table--sessions {
+  font-size: 14px;
+}
+
+.vpn-table--sessions > tbody > tr > td {
+  font-variant-numeric: tabular-nums;
+}
+
+/* tablesorter 排序图标与表头对齐 */
+.vpn-table > thead > tr > th.tablesorter-header {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.vpn-table > thead > tr > th.tablesorter-header:focus {
+  outline: none;
+}
+
+.vpn-table > thead > tr > th.tablesorter-headerAsc,
+.vpn-table > thead > tr > th.tablesorter-headerDesc {
+  color: var(--apple-text-primary);
+}
+
+/* ==========================================================================
+   6. 状态徽标与按钮
+   ========================================================================== */
+
+.vpn-badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: var(--apple-radius-badge);
+  background: var(--apple-fill-subtle);
+  color: var(--apple-text-secondary);
+  font-size: var(--apple-font-size-caption);
+  font-weight: var(--apple-weight-body-medium);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.vpn-badge--ok {
+  background: var(--apple-badge-ok-bg);
+  color: var(--apple-accent-green);
+}
+
+.vpn-badge--warn {
+  background: var(--apple-badge-warn-bg);
+  color: var(--apple-accent-orange);
+}
+
+.vpn-badge--error {
+  background: var(--apple-badge-error-bg);
+  color: var(--apple-accent-red);
+}
+
+/* 断开按钮：胶囊形、实心红，触控高度不小于 32px */
+.vpn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 16px;
+  background: var(--apple-accent-red);
+  border: 0;
+  border-radius: var(--apple-radius-button);
+  color: var(--apple-text-white);
+  font-family: var(--apple-font-text);
+  font-size: 14px;
+  font-weight: var(--apple-weight-body-medium);
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.vpn-btn:hover,
+.vpn-btn:focus {
+  opacity: 0.86;
+  color: var(--apple-text-white);
+  outline: none;
+}
+
+.vpn-btn:active {
+  transform: scale(0.97);
+}
+
+.vpn-btn .glyphicon {
+  margin-right: 6px;
+  font-size: 11px;
+}
+
+/* 国家旗帜：与文字基线对齐 */
+.vpn-flag {
+  width: 20px;
+  height: auto;
+  margin-right: 6px;
+  vertical-align: -3px;
+  border-radius: 3px;
+}
+
+/* ==========================================================================
+   7. 移动端（<= 767.98px）：表格转单列卡片
+   ========================================================================== */
+
+@media (max-width: 767.98px) {
+  /* 关闭 Bootstrap 的横向滚动容器，避免卡片圆角与阴影被裁切；
+     同时清掉 Bootstrap 在 max-width:767px 下加的 1px 灰边与下外边距，
+     交由 .vpn-card 自身承担分隔与留白。 */
+  .table-responsive {
+    overflow: visible;
+    border: 0;
+    margin-bottom: 0;
+  }
+
+  /* 表头在卡片模式下失去意义，标签改由 td[data-label] 承载 */
+  .vpn-table > thead {
+    display: none;
+  }
+
+  .vpn-table,
+  .vpn-table > tbody,
+  .vpn-table > tbody > tr,
+  .vpn-table > tbody > tr > td {
+    display: block;
+    width: 100%;
+  }
+
+  /* 每行 = 一组字段，字段之间以标签／值两端对齐排布 */
+  .vpn-table > tbody > tr > td {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--apple-component-gap-sm);
+    padding: 11px 0;
+    border-bottom: 1px solid var(--apple-hairline);
+    text-align: right;
+    /* 覆盖 Bootstrap 在 max-width:767px 下施加的 nowrap：flex 子项 min-width
+       为 auto，禁止换行时长值（IPv6、长主机名）会顶破卡片宽度 */
+    white-space: normal;
+  }
+
+  .vpn-table > tbody > tr > td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    color: var(--apple-text-secondary);
+    font-size: 14px;
+    font-weight: var(--apple-weight-body);
+    text-align: left;
+  }
+
+  .vpn-table > tbody > tr > td:last-child {
+    border-bottom: 0;
+  }
+
+  /* 首列在卡片模式下不再需要加重，标签列已承担引导作用 */
+  .vpn-table > tbody > tr > td:first-child {
+    font-weight: var(--apple-weight-body);
+  }
+
+  /* 详情表字段较少：首行（VPN Mode）作为卡片内标题处理 */
+  .vpn-table--detail > tbody > tr > td:first-child {
+    white-space: normal;
+  }
+
+  /* 会话表：每条会话独立成组，采用 iOS 分组列表的浅底圆角样式 */
+  .vpn-table--sessions > tbody > tr {
+    margin-bottom: var(--apple-component-gap-sm);
+    padding: 4px var(--apple-component-gap-sm);
+    background: var(--apple-bg-light-gray);
+    border-radius: var(--apple-radius-card-sm);
+  }
+
+  .vpn-table--sessions > tbody > tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .vpn-table--sessions > tbody > tr > td:first-child {
+    font-weight: var(--apple-weight-body-medium);
+  }
+
+  /* 断开按钮独占一行，触控高度提到 44px */
+  .vpn-table--sessions > tbody > tr > td.vpn-cell--action {
+    justify-content: stretch;
+    padding-top: var(--apple-component-gap-sm);
+  }
+
+  .vpn-table--sessions > tbody > tr > td.vpn-cell--action::before {
+    display: none;
+  }
+
+  .vpn-table--sessions > tbody > tr > td.vpn-cell--action .vpn-btn {
+    width: 100%;
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  /* 卡片内边距收紧，把宽度留给内容 */
+  .vpn-card__header {
+    padding: var(--apple-card-padding-sm) var(--apple-card-padding-sm) 0;
+  }
+
+  .vpn-card__body {
+    padding: var(--apple-component-gap-sm) var(--apple-card-padding-sm) var(--apple-card-padding-sm);
+  }
+
+  .vpn-card__footer {
+    padding: 12px var(--apple-card-padding-sm);
+  }
+
+  .vpn-card__title {
+    font-size: 21px;
+  }
+}
+
+/* 大屏：内容区放宽，卡片间距加大 */
+@media (min-width: 1440px) {
+  .container-fluid {
+    max-width: var(--apple-content-max-width-lg);
+  }
+}
+
+/* ==========================================================================
+   8. 地图控件：Leaflet 默认触控目标偏小
+   Leaflet 的缩放／全屏按钮在触屏下为 30x30，低于 HIG 建议的 44x44。
+   仅在粗指针设备放宽，避免影响桌面端鼠标精度。
+   ========================================================================== */
+
+@media (pointer: coarse) {
+  .leaflet-touch .leaflet-bar a {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+  }
+
+  .leaflet-touch .leaflet-bar a.leaflet-control-zoom-in,
+  .leaflet-touch .leaflet-bar a.leaflet-control-zoom-out {
+    font-size: 24px;
+  }
+
+  /* 全屏按钮的图标是 26x52 的雪碧图，上下两格分别是「进入全屏」与「退出全屏」，
+     插件以 26px 垂直位移切换。直接把按钮背景图放大行不通：
+     只要按钮比一格高、又比两格矮，下边缘就必然露出第二格残影，残影高度为
+     （按钮高 - 图标高）/2 —— 44px 按钮即 9px。
+     故关闭按钮自身的背景图（白底与圆角保留），改由伪元素开一个 26x26 取景窗，
+     每次只显示一格；进入/退出全屏切换取景窗的垂直偏移。 */
+  .leaflet-touch .leaflet-bar a.leaflet-control-zoom-fullscreen {
+    position: relative;
+    background-image: none;
+  }
+
+  .leaflet-touch .leaflet-bar a.leaflet-control-zoom-fullscreen::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 26px;
+    height: 26px;
+    margin: -13px 0 0 -13px;
+    /* 雪碧图与插件同源，静态资源挂在 Flask 默认的 /static 下 */
+    background-image: url('/static/dist/leaflet.fullscreen/icon-fullscreen.svg');
+    background-repeat: no-repeat;
+    background-size: 26px 52px;
+    background-position: 0 0;
+  }
+
+  .leaflet-touch .leaflet-bar a.leaflet-control-zoom-fullscreen.leaflet-fullscreen-on::before {
+    background-position: 0 -26px;
+  }
+
+  /* 归属链接为纯文字署名，仅补足触控高度 */
+  .leaflet-control-attribution {
+    line-height: 22px;
+  }
+}

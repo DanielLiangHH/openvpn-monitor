@@ -1,8 +1,6 @@
-{% if vpn.get('state').get('success') == 'SUCCESS' %}
-  {% set pingable = 'Yes' %}
-{% else %}
-  {% set pingable = 'No' %}
-{% endif %}
+{# 保存布尔值而非 'Yes'/'No' 字符串：显示文本要翻译，若拿译文做判断，
+   换 locale 后比较就会失效 #}
+{% set pingable = vpn.get('state').get('success') == 'SUCCESS' %}
 {% set connection = vpn.get('state').get('connected') %}
 {% set nclients = vpn.get('stats').get('nclients')|int %}
 {% set bytesin = vpn.get('stats').get('bytesin')|int %}
@@ -16,40 +14,48 @@
 {% set show_disconnect = vpn.get('show_disconnect') %}
 {% set vpn_version = vpn.get('release') %}
 
-<div class="panel panel-success" id="{{ vpn | get_vpn_anchor  }}">
-  <div class="panel-heading">
-    <h3 class="panel-title">{{ vpn.get('name') }}</h3>
+{% if connection == 'CONNECTED' %}
+  {% set card_state = 'vpn-card--ok' %}
+{% elif connection %}
+  {% set card_state = 'vpn-card--warn' %}
+{% else %}
+  {% set card_state = 'vpn-card--error' %}
+{% endif %}
+
+<div class="vpn-card {{ card_state }}" id="{{ vpn | get_vpn_anchor  }}">
+  <div class="vpn-card__header">
+    <h2 class="vpn-card__title">{{ vpn.get('name') }}</h2>
   </div>
-  <div class="panel-body">
+  <div class="vpn-card__body">
     <div class="table-responsive">
-      <table class="table table-condensed table-responsive">
+      <table class="vpn-table vpn-table--detail">
         <thead>
           <tr>
-            <th>VPN Mode</th>
-            <th>Status</th>
-            <th>Pingable</th>
-            <th>Clients</th>
-            <th>Total Bytes In</th>
-            <th>Total Bytes Out</th>
-            <th>Up Since</th>
-            <th>Local IP Address</th>
+            <th>{{ _('VPN Mode') }}</th>
+            <th>{{ _('Status') }}</th>
+            <th>{{ _('Pingable') }}</th>
+            <th>{{ _('Clients') }}</th>
+            <th>{{ _('Total Bytes In') }}</th>
+            <th>{{ _('Total Bytes Out') }}</th>
+            <th>{{ _('Up Since') }}</th>
+            <th>{{ _('Local IP Address') }}</th>
             {% if vpn_mode == 'Client' %}
-            <th>Remote IP Address</th>
+            <th>{{ _('Remote IP Address') }}</th>
             {% endif %}
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>{{ vpn_mode }}</td>
-            <td>{{ connection }}</td>
-            <td>{{ pingable }}</td>
-            <td>{{ nclients }}</td>
-            <td>{{ bytesin }} ({{ bytesin | get_naturalsize }})</td>
-            <td>{{ bytesout }} ({{ bytesout | get_naturalsize }})</td>
-            <td>{{ up_since.strftime(datetime_format) }}</td>
-            <td>{% if local_ipv6 %}{{ local_ip }}<br>{{ local_ipv6 }}{% else %}{{ local_ip }}{% endif %}</td>
+            <td data-label="{{ _('VPN Mode') }}">{{ vpn_mode }}</td>
+            <td data-label="{{ _('Status') }}"><span class="vpn-badge {{ 'vpn-badge--ok' if connection == 'CONNECTED' else 'vpn-badge--warn' }}">{{ connection }}</span></td>
+            <td data-label="{{ _('Pingable') }}"><span class="vpn-badge {{ 'vpn-badge--ok' if pingable else 'vpn-badge--error' }}">{{ _('Yes') if pingable else _('No') }}</span></td>
+            <td data-label="{{ _('Clients') }}">{{ nclients }}</td>
+            <td data-label="{{ _('Total Bytes In') }}">{{ bytesin }} ({{ bytesin | get_naturalsize }})</td>
+            <td data-label="{{ _('Total Bytes Out') }}">{{ bytesout }} ({{ bytesout | get_naturalsize }})</td>
+            <td data-label="{{ _('Up Since') }}">{{ up_since.strftime(datetime_format) }}</td>
+            <td data-label="{{ _('Local IP Address') }}">{% if local_ipv6 %}{{ local_ip }}<br>{{ local_ipv6 }}{% else %}{{ local_ip }}{% endif %}</td>
             {% if vpn_mode == 'Client' %}
-            <td>{{ remote_ip }}</td>
+            <td data-label="{{ _('Remote IP Address') }}">{{ remote_ip }}</td>
             {% endif %}
           </tr>
         </tbody>
@@ -59,5 +65,5 @@
       {% include 'sessions.html' %}
     {% endif %}
   </div>
-  <div class="panel-footer panel-custom">{{ vpn_version }}</div>
+  <div class="vpn-card__footer">{{ vpn_version }}</div>
 </div>

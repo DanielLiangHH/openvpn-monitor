@@ -1,18 +1,21 @@
 <div class="table-responsive">
-  <table id="sessions_{{ vpn_id }}" class="table table-striped table-bordered table-hover table-condensed table-responsive tablesorter tablesorter-bootstrap">
+  <table id="sessions_{{ vpn_id }}" class="vpn-table vpn-table--sessions tablesorter">
     <thead>
      <tr>
         {% set headers = vpn_mode | get_session_headers %}
         {% if vpn_mode == 'Server' and show_disconnect %}
-          {% set headers = headers + ['Action'] %}
+          {% set headers = headers + [_('Action')] %}
         {% endif %}
         {% for header in headers %}
-          {% if header == 'Time Online' %}<th class="sorter-duration">{% else %}<th>{% endif %}{{ header }}</th>
+          {# 比较对象须与 get_session_headers 同源，都走 gettext，否则取到译文后匹配不上 #}
+          {% if header == _('Time Online') %}<th class="sorter-duration">{% else %}<th>{% endif %}{{ header }}</th>
         {% endfor %}
      </tr>
    </thead>
    <tbody>
-     {% for _, session in sessions %}
+     {# 循环变量不可用 `_`：`_` 是 gettext 的别名，在此遮蔽后，
+        被 include 的 server_session.html 中的 _() 会变成"调用字符串"而报错 #}
+     {% for session_id, session in sessions %}
         <tr>
           {% if vpn_mode == 'Client' %}
             {% include 'client_session.html' %}

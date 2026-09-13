@@ -1,20 +1,11 @@
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='dist/bootstrap3/dist/css/bootstrap.min.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='dist/bootstrap3/dist/css/bootstrap-theme.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='dist/tablesorter/dist/css/theme.bootstrap_3.min.css') }}">
 {% if enable_maps %}
   <link rel="stylesheet" href="{{ url_for('static', filename='dist/leaflet/dist/leaflet.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='dist/leaflet.fullscreen/Control.FullScreen.css') }}">
 {% endif %}
-<style>
-.panel-custom {
-   background-color:#777;
-   color:#fff;
-   font-size:80%;
-   vertical-align:baseline;
-   padding:.4em .4em .4em;
-   line-height:1;
-   font-weight:700;
-}
-</style>
+{# apple.css 是覆盖层，必须最后加载：同特异性的规则由顺序决定胜负，
+   若排在 leaflet.css 之前，地图控件等覆盖会静默失效 #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/apple.css') }}">
 {% endblock %}

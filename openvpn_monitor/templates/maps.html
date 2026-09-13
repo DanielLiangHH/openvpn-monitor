@@ -1,9 +1,9 @@
 {% if enable_maps %}
-<div class="panel panel-info">
-  <div class="panel-heading">
-    <h3 class="panel-title">Map View</h3>
+<div class="vpn-card vpn-card--info">
+  <div class="vpn-card__header">
+    <h2 class="vpn-card__title">{{ _('Map View') }}</h2>
   </div>
-  <div class="panel-body">
+  <div class="vpn-card__body">
     <div id="map_canvas" style="height:{{ maps_height }}px"></div>
     <script>{% include 'maps.js' %}</script>
   </div>

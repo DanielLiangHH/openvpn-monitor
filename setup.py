@@ -30,7 +30,7 @@ with open('requirements.txt', 'r', encoding='utf_8') as rt:
     install_requires = rt.read().splitlines()
 
 package_files = []
-for directory in ['openvpn_monitor/static', 'openvpn_monitor/templates']:
+for directory in ['openvpn_monitor/static', 'openvpn_monitor/templates', 'openvpn_monitor/translations']:
     for (path, directories, filenames) in os.walk(directory):
         for filename in filenames:
             trimmed_path = path.replace('openvpn_monitor/', '')

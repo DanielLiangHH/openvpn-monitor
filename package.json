@@ -7,9 +7,13 @@
   "license": "GPL-3.0",
   "dependencies": {
     "bootstrap3": "^3.3.5",
+    "jquery": "^3.7.1",
     "leaflet": "^1.9.4",
     "leaflet.fullscreen": "^3.0.2",
     "overlapping-marker-spiderfier-leaflet": "^0.2.7",
     "tablesorter": "^2.32.0"
+  },
+  "resolutions": {
+    "jquery": "3.7.1"
   }
 }

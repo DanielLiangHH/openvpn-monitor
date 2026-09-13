@@ -5,15 +5,26 @@
 <script src="{{ url_for('static', filename='dist/tablesorter/dist/js/parsers/parser-network.min.js') }}"></script>
 <script src="{{ url_for('static', filename='dist/tablesorter/dist/js/parsers/parser-duration.min.js') }}"></script>
 <script src="{{ url_for('static', filename='dist/bootstrap3/dist/js/bootstrap.min.js') }}"></script>
-<script>$(document).ready(function(){
-$("table.tablesorter").tablesorter({
-sortList: [[0,0]], theme:"bootstrap", headerTemplate:"{content} {icon}", widgets:["uitheme"],
-durationLabels : "(?:years|year|y),(?:days|day|d),(?:hours|hour|h),(?:minutes|minute|min|m),(?:seconds|second|sec|s)"
-});
-});</script>
 {% if enable_maps %}
   <script src="{{ url_for('static', filename='dist/leaflet/dist/leaflet.js') }}"></script>
   <script src="{{ url_for('static', filename='dist/overlapping-marker-spiderfier-leaflet/dist/oms.js') }}"></script>
   <script src="{{ url_for('static', filename='dist/leaflet.fullscreen/Control.FullScreen.js') }}"></script>
 {% endif %}
+<script>
+$(document).ready(function(){
+  // 窄屏下表格已转为卡片布局、表头不可见，排序既无入口也无意义，
+  // 故不初始化 tablesorter，同时避免其在 display:block 的表格上做无谓的 DOM 操作。
+  // 断点须与 apple.css 中的 --apple-breakpoint-sm 保持一致。
+  if (window.matchMedia('(max-width: 767.98px)').matches) {
+    return;
+  }
+  $("table.tablesorter").tablesorter({
+    sortList: [[0,0]], theme:"bootstrap", headerTemplate:"{content} {icon}", widgets:["uitheme"],
+    // parser-duration 以 /\s*,\s*/ 切成 5 组（年/天/时/分/秒），组内以 | 分隔，
+    // 故中文标签不能含逗号。标签顺序须与 app.py get_total_connected_time
+    // 的输出格式（如 '2 天 07:39:39'）对应。
+    durationLabels : "(?:years|year|y),(?:days|day|d|天),(?:hours|hour|h|小时|时),(?:minutes|minute|min|m|分钟|分),(?:seconds|second|sec|s|秒)"
+  });
+});
+</script>
 {% endblock %}

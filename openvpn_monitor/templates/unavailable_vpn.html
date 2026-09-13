@@ -1,8 +1,8 @@
-<div class="panel panel-danger" id="{{ vpn | get_vpn_anchor }}">
-  <div class="panel-heading">
-    <h3 class="panel-title">{{ vpn['name'] }}</h3>
+<div class="vpn-card vpn-card--error" id="{{ vpn | get_vpn_anchor }}">
+  <div class="vpn-card__header">
+    <h2 class="vpn-card__title">{{ vpn['name'] }}</h2>
   </div>
-  <div class="panel-body">
-    Could not connect to {{ vpn | get_vpn_error }}
+  <div class="vpn-card__body">
+    <p class="vpn-card__message">{{ _('Could not connect to') }} <code>{{ vpn | get_vpn_error }}</code></p>
   </div>
 </div>
