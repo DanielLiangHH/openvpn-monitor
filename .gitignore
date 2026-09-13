@@ -9,3 +9,5 @@ tmp*
 .svn
 .tox
 *.egg-info/
+/.venv/
+/openvpn_monitor/static/dist/bootstrap3/dist/
