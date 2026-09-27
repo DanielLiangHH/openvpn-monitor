@@ -5,6 +5,21 @@ site=Example
 #longitude=-74
 enable_maps=True
 maps_height=500
+# 初始底图。候选见 openvpn_monitor/map_providers.py 的 id，无需 Key 的有：
+#   amap（高德·矢量，默认）、amap_sat（高德·卫星）、tencent（腾讯·矢量）、
+#   tianditu（天地图·矢量）、esri / esri_sat、osm / carto_light / carto_dark /
+#   opentopomap。留空等同 amap。
+# 默认不选 OpenStreetMap：tile.openstreetmap.org 在中国大陆网络下存在 DNS 污染，
+# 瓦片会一直超时导致底图空白。osm 与 carto_* / opentopomap 在国内需自备代理。
+# 这里只决定初始值，用户在页面上切换后以浏览器本地记录为准（不写回配置）。
+map_provider=amap
+# 天地图的 Key（在 https://console.tianditu.gov.cn 申请）。不填时该选项仍出现在
+# 页面的底图下拉框里，但选中会提示缺少 Key 并退回默认底图。
+#map_tianditu_key=
+# 自建瓦片服务。占位符 {s} 为子域、{x}/{y}/{z} 为瓦片坐标，与 Leaflet 一致。
+# 一旦设置，下拉框会多出一项「自定义」并默认用它；版权声明留空，由使用方自负其责。
+# 注：换成非 GCJ-02 的瓦片时坐标不做换算，落点可能偏移数百米。
+#map_tile_url=https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}
 geoip_data=/usr/share/GeoIP/GeoLite2-City.mmdb
 datetime_format=%d/%m/%Y %H:%M:%S
 

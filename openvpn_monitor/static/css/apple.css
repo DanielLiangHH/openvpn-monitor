@@ -54,7 +54,14 @@
   --apple-card-padding: 32px;
   --apple-card-padding-sm: 20px;
 
+  /* 内容区宽度分档。--apple-content-max-width 是当前生效值，由下方断点
+     重定向到对应档位；导航栏与内容区共用它，两者必须同宽才不会左右错位。
+     注：苹果规范建议内容区 980–1200px，此处按本项目的诉求（会话表有 10 列，
+     过窄会频繁断行）放宽到更大档位。 */
   --apple-content-max-width-lg: 1200px;
+  --apple-content-max-width-xl: 1400px;
+  --apple-content-max-width-2xl: 1720px;
+  --apple-content-max-width: var(--apple-content-max-width-lg);
 
   /* 字重 */
   --apple-weight-title: 600;
@@ -164,7 +171,7 @@ body {
 
 /* 覆盖 .container-fluid：限制内容宽度并适配左右安全区 */
 .container-fluid {
-  max-width: var(--apple-content-max-width-lg);
+  max-width: var(--apple-content-max-width);
   margin-left: auto;
   margin-right: auto;
   padding-left: max(20px, env(safe-area-inset-left));
@@ -216,7 +223,7 @@ body {
   flex-wrap: wrap;
   align-items: center;
   gap: 0 var(--apple-component-gap-sm);
-  max-width: var(--apple-content-max-width-lg);
+  max-width: var(--apple-content-max-width);
   margin: 0 auto;
   padding-left: max(16px, env(safe-area-inset-left));
   padding-right: max(16px, env(safe-area-inset-right));
@@ -856,10 +863,17 @@ body {
   }
 }
 
-/* 大屏：内容区放宽，卡片间距加大 */
+/* 大屏：按视口分档放宽内容区。只重定向生效 token，.container-fluid 与
+   .vpn-nav__inner 会自动跟随，无需各自重写 max-width。 */
 @media (min-width: 1440px) {
-  .container-fluid {
-    max-width: var(--apple-content-max-width-lg);
+  :root {
+    --apple-content-max-width: var(--apple-content-max-width-xl);
+  }
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --apple-content-max-width: var(--apple-content-max-width-2xl);
   }
 }
 
@@ -915,4 +929,85 @@ body {
   .leaflet-control-attribution {
     line-height: 22px;
   }
+}
+
+/* ==========================================================================
+   9. 地图底图切换控件与缺 Key 提示
+   控件做成 Leaflet 的 topright control，故定位由 .leaflet-control 负责，
+   这里只管外观。放地图内而非导航栏：窄屏下导航栏收进汉堡菜单，放那里没入口。
+   配色全部走 token，深色模式自动跟随。
+   ========================================================================== */
+
+.vpn-map-provider__select {
+  /* 关掉原生外观才能自定义背景与边框；箭头改由 .vpn-map-provider::after 画，
+     这样它可以取 token 颜色，不必为深色模式另备一张图 */
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 7px 26px 7px 12px;
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-radius-badge);
+  background-color: var(--apple-bg-white);
+  color: var(--apple-text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  box-shadow: var(--apple-shadow-sm);
+}
+
+.vpn-map-provider__select:hover {
+  border-color: var(--apple-text-tertiary);
+}
+
+.vpn-map-provider__select:focus-visible {
+  outline: 2px solid var(--apple-link-blue);
+  outline-offset: 2px;
+}
+
+.vpn-map-provider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  width: 9px;
+  height: 5px;
+  margin-top: -2px;
+  background-color: var(--apple-text-tertiary);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  /* 不让伪元素挡住 select 自身的点击 */
+  pointer-events: none;
+}
+
+@media (pointer: coarse) {
+  /* 与第 8 节同理：Leaflet 默认控件不足以承载触控 */
+  .vpn-map-provider__select {
+    min-height: 44px;
+    font-size: 15px;
+  }
+}
+
+/* 选中缺 Key 的服务商时的提示。挂在 #map_canvas 下，用绝对定位浮在瓦片之上；
+   pointer-events:none 保证它不挡住底下的地图拖拽。 */
+.vpn-map-notice {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  max-width: calc(100% - 24px);
+  padding: 10px 18px;
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-radius-button);
+  background: var(--apple-bg-dark);
+  color: var(--apple-text-on-dark);
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: var(--apple-shadow-card);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.vpn-map-notice--leaving {
+  opacity: 0;
 }

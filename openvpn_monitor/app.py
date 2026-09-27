@@ -34,10 +34,16 @@ from config.loader import ConfigLoader                    # noqa
 from vpns.openvpn.data_collector import VPNDataCollector  # noqa
 from vpns.openvpn.disconnector import VPNDisconnector     # noqa
 from location_data.maxmind.geoip import GeoipDBLoader     # noqa
+from map_providers import resolve_providers               # noqa
 from util import is_truthy                                # noqa
 
 logging.basicConfig(stream=sys.stderr, format='[%(asctime)s] [%(process)d] [%(levelname)s] %(message)s')
 logging.getLogger().setLevel(logging.INFO)
+
+# 地图中心点的兜底坐标（上游作者所在地）。配置文件未指定 latitude/longitude
+# 时会落到这里；maps.js 用 map_centre_configured 判断是否该把该点纳入取景范围。
+DEFAULT_MAP_LATITUDE = 40.72
+DEFAULT_MAP_LONGITUDE = -74
 
 
 def openvpn_monitor_wsgi():
@@ -58,6 +64,12 @@ def openvpn_monitor_wsgi():
     config_file = os.getenv('OPENVPNMONITOR_CONFIG_FILE', '/etc/openvpn-monitor/openvpn-monitor.conf')
     config = ConfigLoader(config_file)
     settings = config.settings
+    # Dockerfile 自 1.0.2 起设置了 ENABLE_MAPS / GEOIP_DATA 环境变量，但本项目
+    # 从不读取它们（上游从未支持过），容器化部署因此拿不到 GeoIP 库，地图上
+    # 一个客户端标记都不会有。这里把环境变量作为配置文件的后备，配置文件优先。
+    for env_key, conf_key in (('ENABLE_MAPS', 'enable_maps'), ('GEOIP_DATA', 'geoip_data')):
+        if conf_key not in settings and os.getenv(env_key):
+            settings[conf_key] = os.getenv(env_key)
     loaded_vpns = config.vpns
     geoip_db = GeoipDBLoader(settings)
 
@@ -168,8 +180,14 @@ def openvpn_monitor_wsgi():
         logo = settings.get('logo')
         enable_maps = is_truthy(settings.get('enable_maps', False))
         maps_height = settings.get('maps_height', 500)
-        latitude = settings.get('latitude', 40.72)
-        longitude = settings.get('longitude', -74)
+        # 底图由前端下拉框切换，作用范围只在本浏览器（localStorage），故这里
+        # 一次给出全部候选，由 JS 决定实际加载哪一个。
+        map_providers, map_default_provider = resolve_providers(settings)
+        latitude = settings.get('latitude', DEFAULT_MAP_LATITUDE)
+        longitude = settings.get('longitude', DEFAULT_MAP_LONGITUDE)
+        # 只有配置文件显式给了经纬度，才把这个点纳入地图取景范围。否则默认值会把
+        # 视图拉到横跨大洋的世界级缩放，客户端标记全被压成几个像素。
+        map_centre_configured = 'latitude' in settings and 'longitude' in settings
         datetime_format = settings.get('datetime_format', '%d/%m/%Y %H:%M:%S')
         # Flask-Babel 只向 Jinja 注册了 _ / gettext / ngettext，并未注册 get_locale，
         # 故在此注入。get_locale() 返回 Locale 对象，str() 为 zh_Hans_CN，
@@ -180,8 +198,16 @@ def openvpn_monitor_wsgi():
             logo=logo,
             enable_maps=enable_maps,
             maps_height=maps_height,
+            map_providers=map_providers,
+            map_default_provider=map_default_provider,
+            # maps.js 后缀是 .js，不在 babel.cfg 的抽取范围内，故其界面文案
+            # 一律在 Python 侧翻译好再传过去。
+            map_provider_label=gettext('Map Provider'),
+            map_provider_missing_key=gettext('No API key is configured for this '
+                                             'map provider. Reverted to the default map.'),
             latitude=latitude,
             longitude=longitude,
+            map_centre_configured=map_centre_configured,
             datetime_format=datetime_format,
             locale=locale,
         )

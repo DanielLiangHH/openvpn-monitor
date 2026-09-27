@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-09-27 14:28+0800\n"
+"POT-Creation-Date: 2026-09-27 15:26+0800\n"
 "PO-Revision-Date: 2026-09-13 12:04+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans_CN\n"
@@ -18,67 +18,119 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: openvpn_monitor/app.py:128
+#: openvpn_monitor/app.py:140
 msgid "Username / Hostname"
 msgstr "用户名 / 主机名"
 
-#: openvpn_monitor/app.py:129
+#: openvpn_monitor/app.py:141
 msgid "VPN IP"
 msgstr "VPN 地址"
 
-#: openvpn_monitor/app.py:130
+#: openvpn_monitor/app.py:142
 msgid "Remote IP"
 msgstr "远端 IP"
 
-#: openvpn_monitor/app.py:131
+#: openvpn_monitor/app.py:143
 msgid "Location"
 msgstr "位置"
 
-#: openvpn_monitor/app.py:132
+#: openvpn_monitor/app.py:144
 msgid "Bytes In"
 msgstr "接收流量"
 
-#: openvpn_monitor/app.py:133
+#: openvpn_monitor/app.py:145
 msgid "Bytes Out"
 msgstr "发送流量"
 
-#: openvpn_monitor/app.py:134
+#: openvpn_monitor/app.py:146
 msgid "Connected Since"
 msgstr "连接时间"
 
-#: openvpn_monitor/app.py:135
+#: openvpn_monitor/app.py:147
 msgid "Last Ping"
 msgstr "最后活动"
 
-#: openvpn_monitor/app.py:136 openvpn_monitor/templates/sessions.html:11
+#: openvpn_monitor/app.py:148 openvpn_monitor/templates/sessions.html:11
 msgid "Time Online"
 msgstr "在线时长"
 
-#: openvpn_monitor/app.py:139
+#: openvpn_monitor/app.py:151
 msgid "Tun-Tap-Read"
 msgstr "Tun/Tap 读取"
 
-#: openvpn_monitor/app.py:140
+#: openvpn_monitor/app.py:152
 msgid "Tun-Tap-Write"
 msgstr "Tun/Tap 写入"
 
-#: openvpn_monitor/app.py:141
+#: openvpn_monitor/app.py:153
 msgid "TCP-UDP-Read"
 msgstr "TCP/UDP 读取"
 
-#: openvpn_monitor/app.py:142
+#: openvpn_monitor/app.py:154
 msgid "TCP-UDP-Write"
 msgstr "TCP/UDP 写入"
 
-#: openvpn_monitor/app.py:143
+#: openvpn_monitor/app.py:155
 msgid "Auth-Read"
 msgstr "认证读取"
 
-#: openvpn_monitor/app.py:162
+#: openvpn_monitor/app.py:174
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "%(num)d 天"
+
+#: openvpn_monitor/app.py:205
+msgid "Map Provider"
+msgstr "地图服务商"
+
+#: openvpn_monitor/app.py:206
+msgid ""
+"No API key is configured for this map provider. Reverted to the default "
+"map."
+msgstr "该地图服务商未配置 Key，已切回默认底图。"
+
+#: openvpn_monitor/map_providers.py:59 openvpn_monitor/map_providers.py:85
+#: openvpn_monitor/map_providers.py:101
+msgid "Vector"
+msgstr "矢量"
+
+#: openvpn_monitor/map_providers.py:72
+msgid "Satellite"
+msgstr "卫星"
+
+#: openvpn_monitor/map_providers.py:116
+msgid "Street"
+msgstr "街道"
+
+#: openvpn_monitor/map_providers.py:129
+msgid "Imagery"
+msgstr "影像"
+
+#: openvpn_monitor/map_providers.py:142
+msgid "Standard"
+msgstr "标准"
+
+#: openvpn_monitor/map_providers.py:150 openvpn_monitor/map_providers.py:162
+#: openvpn_monitor/map_providers.py:174 openvpn_monitor/map_providers.py:186
+msgid "Overseas service; may need a proxy in China"
+msgstr "海外服务，国内可能需自备代理"
+
+#: openvpn_monitor/map_providers.py:154
+msgid "Light"
+msgstr "浅色"
+
+#: openvpn_monitor/map_providers.py:166
+msgid "Dark"
+msgstr "深色"
+
+#: openvpn_monitor/map_providers.py:178
+msgid "Terrain"
+msgstr "地形"
+
+#: openvpn_monitor/map_providers.py:220 openvpn_monitor/map_providers.py:221
+msgid "Custom"
+msgstr "自定义"
 
 #: openvpn_monitor/templates/base.html:8
 #: openvpn_monitor/templates/navbar.html:3

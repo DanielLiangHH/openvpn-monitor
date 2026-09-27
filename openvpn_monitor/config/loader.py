@@ -79,6 +79,9 @@ class ConfigLoader(object):
             'longitude',
             'enable_maps',
             'maps_height',
+            'map_provider',
+            'map_tile_url',
+            'map_tianditu_key',
             'geoip_data',
             'datetime_format'
         ]
