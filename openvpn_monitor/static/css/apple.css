@@ -94,9 +94,35 @@
   --apple-breakpoint-sm: 767.98px;
 }
 
-/* 暗色模式：仅重定义 token，组件规则自动跟随 */
+/* 暗色模式：仅重定义 token，组件规则自动跟随。
+   下面两个代码块必须逐条保持同步 —— 它们定义的是同一套暗色配色。
+   1) [data-theme='dark']：用户在导航栏显式选择深色；
+   2) prefers-color-scheme：未显式选择时跟随系统。它同时是 JS 不可用时的回退，
+      :not([data-theme='light']) 保证「系统深色 + 用户显式选浅色」时浅色胜出。 */
+:root[data-theme='dark'] {
+  --apple-bg-white: #1c1c1e;
+  --apple-bg-elevated: #2c2c2e;
+  --apple-bg-light-gray: #2c2c2e;
+  --apple-text-primary: #f5f5f7;
+  --apple-text-secondary: #a1a1a6;
+  --apple-text-tertiary: #8e8e93;
+  --apple-link-blue: #2997ff;
+  --apple-link-blue-hover: #5ac8fa;
+  --apple-accent-green: #30d158;
+  --apple-accent-orange: #ff9f0a;
+  --apple-accent-red: #ff453a;
+  --apple-hairline: rgba(255, 255, 255, 0.12);
+  --apple-fill-subtle: rgba(120, 120, 128, 0.24);
+  --apple-nav-bg: rgba(28, 28, 30, 0.72);
+  --apple-badge-ok-bg: rgba(48, 209, 88, 0.18);
+  --apple-badge-warn-bg: rgba(255, 159, 10, 0.18);
+  --apple-badge-error-bg: rgba(255, 69, 58, 0.18);
+  --apple-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.4);
+  --apple-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --apple-bg-white: #1c1c1e;
     --apple-bg-elevated: #2c2c2e;
     --apple-bg-light-gray: #2c2c2e;
@@ -354,6 +380,81 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* 主题切换按钮。始终可见，不限断点；图标用内联 SVG，
+   Bootstrap 的 glyphicons 里没有日/月字形。44x44 与汉堡按钮同为 HIG 触控下限。 */
+.vpn-theme-toggle {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--apple-radius-card-sm);
+  color: var(--apple-text-primary);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.vpn-theme-toggle:hover,
+.vpn-theme-toggle:focus {
+  background: var(--apple-fill-subtle);
+  outline: none;
+}
+
+.vpn-theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 浅色下显示月亮（点击切到暗色），暗色下显示太阳。
+   与上面两个暗色 token 代码块一一对应，同样需要保持同步。 */
+.vpn-theme-toggle__sun {
+  display: none;
+}
+
+:root[data-theme='dark'] .vpn-theme-toggle__moon {
+  display: none;
+}
+
+:root[data-theme='dark'] .vpn-theme-toggle__sun {
+  display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .vpn-theme-toggle__moon {
+    display: none;
+  }
+
+  :root:not([data-theme='light']) .vpn-theme-toggle__sun {
+    display: block;
+  }
+}
+
+/* 宽屏下把按钮排到导航菜单右侧；窄屏下汉堡按钮才是最右，
+   按钮须留在汉堡之前，否则会掉进折叠菜单下方。 */
+@media (min-width: 768px) {
+  .vpn-nav__brand {
+    order: 0;
+  }
+
+  .vpn-nav .navbar-collapse {
+    order: 1;
+  }
+
+  .vpn-theme-toggle {
+    order: 2;
+  }
+}
+
 /* ==========================================================================
    4. 卡片
    ========================================================================== */
@@ -497,6 +598,23 @@ body {
      图标会被推到列最右侧，与标签之间出现无法归属的空白；收缩到内容宽度后，
      图标紧贴标签，排序入口的归属一目了然。 */
   display: inline-block;
+}
+
+/* tablesorter 的 uitheme widget 初始化时会给 <table> 追加 Bootstrap 的
+   `table table-bordered table-striped`（见 jquery.tablesorter.widgets.js 中的
+   themes.bootstrap.table），这两个 class 带来的表现必须在本层中和掉：
+   - table-striped 的斑马纹背景加在 <tr> 上，Bootstrap 写法为
+     `.table-striped > tbody > tr:nth-of-type(odd)`，特异性 (0,2,2)，高于本层
+     对单元格的覆盖。单元格背景已归零，行背景于是直接透出：浅色下是 #f9f9f9，
+     暗色下就成了白底 + --apple-text-primary(#f5f5f7) 的浅色文字，整行不可读。
+   - table-bordered 给表格外框加了 1px #ddd 边框。
+   选择器都带上 .vpn-table 以取得足够特异性，不依赖与 Bootstrap 的加载顺序。 */
+.vpn-table.table-striped > tbody > tr:nth-of-type(odd) {
+  background: transparent;
+}
+
+.vpn-table.table-bordered {
+  border: 0;
 }
 
 .tablesorter-bootstrap > tbody > tr.even > td,

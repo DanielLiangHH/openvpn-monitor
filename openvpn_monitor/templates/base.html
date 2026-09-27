@@ -6,6 +6,26 @@
     <meta name="color-scheme" content="light dark">
     <meta http-equiv="refresh" content="300">
     <title>{{ site }} {{ _('OpenVPN Status Monitor') }}</title>
+    {# 主题必须在首次渲染前同步确定：若等到 DOMContentLoaded 再切，会先闪一帧
+       浅色，而本页每 5 分钟自动刷新，这一帧会被反复看到。
+       取值优先级：localStorage 中用户的显式选择 → 系统偏好。
+       样式层见 apple.css 中 :root[data-theme='dark'] 与 prefers-color-scheme 两处。 #}
+    <script>
+      (function () {
+        var stored = null;
+        try {
+          stored = window.localStorage.getItem('vpn-monitor-theme');
+        } catch (e) {
+          // 隐私模式等场景下 localStorage 不可读，退回跟随系统
+        }
+        var theme = (stored === 'light' || stored === 'dark')
+          ? stored
+          : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var root = document.documentElement;
+        root.setAttribute('data-theme', theme);
+        root.style.colorScheme = theme;
+      })();
+    </script>
     {% include 'css.html' %}
     {% include 'js.html' %}
   </head>

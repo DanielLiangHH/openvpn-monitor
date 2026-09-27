@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-09-13 12:07+0800\n"
+"POT-Creation-Date: 2026-09-27 14:28+0800\n"
 "PO-Revision-Date: 2026-09-13 12:04+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans_CN\n"
@@ -85,12 +85,12 @@ msgstr[0] "%(num)d 天"
 msgid "OpenVPN Status Monitor"
 msgstr "OpenVPN 状态监控"
 
-#: openvpn_monitor/templates/base.html:25
+#: openvpn_monitor/templates/base.html:45
 msgid "Page automatically reloads every 5 minutes. Last update:"
 msgstr "页面每 5 分钟自动刷新。最后更新："
 
 #: openvpn_monitor/templates/maps.html:4
-#: openvpn_monitor/templates/navbar.html:26
+#: openvpn_monitor/templates/navbar.html:47
 msgid "Map View"
 msgstr "地图视图"
 
@@ -98,7 +98,19 @@ msgstr "地图视图"
 msgid "Logo"
 msgstr "标志"
 
-#: openvpn_monitor/templates/navbar.html:8
+#: openvpn_monitor/templates/navbar.html:10
+msgid "Switch color theme"
+msgstr "切换颜色主题"
+
+#: openvpn_monitor/templates/navbar.html:11
+msgid "Switch to dark theme"
+msgstr "切换到深色主题"
+
+#: openvpn_monitor/templates/navbar.html:12
+msgid "Switch to light theme"
+msgstr "切换到浅色主题"
+
+#: openvpn_monitor/templates/navbar.html:29
 msgid "Toggle navigation"
 msgstr "切换导航"
 

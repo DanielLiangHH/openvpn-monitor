@@ -12,6 +12,61 @@
 {% endif %}
 <script>
 $(document).ready(function(){
+  // 主题切换。data-theme 已由 base.html 的 head 脚本在渲染前设好，
+  // 这里只补按钮状态与交互。
+  (function () {
+    var KEY = 'vpn-monitor-theme';
+    var root = document.documentElement;
+    var toggle = document.getElementById('vpnThemeToggle');
+    if (!toggle) {
+      return;
+    }
+
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function asTheme(value) {
+      return value === 'dark' ? 'dark' : 'light';
+    }
+
+    // 用户显式选择过则返回该值，否则返回 null（表示跟随系统）
+    function storedTheme() {
+      try {
+        var value = window.localStorage.getItem(KEY);
+        return (value === 'light' || value === 'dark') ? value : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function apply(theme) {
+      root.setAttribute('data-theme', theme);
+      root.style.colorScheme = theme;
+      toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+      var label = theme === 'dark' ? toggle.dataset.labelLight : toggle.dataset.labelDark;
+      toggle.setAttribute('aria-label', label);
+      toggle.setAttribute('title', label);
+    }
+
+    apply(asTheme(root.getAttribute('data-theme')));
+
+    toggle.addEventListener('click', function () {
+      var next = asTheme(root.getAttribute('data-theme')) === 'dark' ? 'light' : 'dark';
+      try {
+        window.localStorage.setItem(KEY, next);
+      } catch (e) {
+        // 存不下时仅本次会话生效
+      }
+      apply(next);
+    });
+
+    // 未显式选择过时跟随系统主题变化
+    prefersDark.addEventListener('change', function (event) {
+      if (!storedTheme()) {
+        apply(event.matches ? 'dark' : 'light');
+      }
+    });
+  })();
+
   // 窄屏下表格已转为卡片布局、表头不可见，排序既无入口也无意义，
   // 故不初始化 tablesorter，同时避免其在 display:block 的表格上做无谓的 DOM 操作。
   // 断点须与 apple.css 中的 --apple-breakpoint-sm 保持一致。
